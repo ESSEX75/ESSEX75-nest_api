@@ -1,0 +1,13 @@
+  async getNewTokens(refreshToken: string): Promise<AuthResponseDto> {
+    try {
+      const decoded = await this.jwt.verifyAsync(refreshToken);
+      if (!decoded) throw new UnauthorizedException('Invalid refresh token');
+
+      const user = await this.usersService.getById(decoded.id);
+      if (!user) throw new UnauthorizedException('User not found');
+
+      return this.issueTokens(user.id);
+    } catch (err) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
