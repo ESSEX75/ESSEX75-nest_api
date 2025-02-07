@@ -1,0 +1,6 @@
+export enum EKycStatus {
+  UNVERIFIED = 'UNVERIFIED',
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
+  VERIFIED = 'VERIFIED'
+}

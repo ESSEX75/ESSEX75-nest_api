@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../users/users.service';
 import { v4 as uuidv4 } from 'uuid';
+import { EnumKycUserRoleDto } from '@prisma/client';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -24,7 +25,7 @@ export class AuthController {
 
     let user = await this.usersService.getByTelegramId(telegramId);
     if (!user) {
-      user = await this.usersService.createUser({ telegramId });
+      user = await this.usersService.createUser({ telegramId, role: EnumKycUserRoleDto.GUEST });
     }
 
     // Генерируем токены

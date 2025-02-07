@@ -13,7 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum EnumKycUserRoleDto {
+  GUEST
+  MASTER
+  ADMIN
+}
+
 model User {
-  id          String   @id @default(uuid())
-  telegramId  Int      @unique  @map("telegram_id")
+  id          String              @id @default(uuid())
+  telegramId  Int                 @unique @map("telegram_id")
+  role        EnumKycUserRoleDto  // Используем перечисление для роли пользователя
 }

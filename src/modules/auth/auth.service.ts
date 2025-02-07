@@ -12,13 +12,10 @@ export class AuthService {
   EXPIRE_DAY_REFRESH_TOKEN = 1;
   REFRESH_TOKEN_NAME = 'refreshToken';
 
-  constructor(
-    private readonly usersService: UsersService,
-    private jwt: JwtService
-  ) {}
+  constructor(private jwt: JwtService) {}
 
   /**
-   * Валидация инициализационных данных пользователя.
+   * Сервис валидации инициализационных данных пользователя.
    * @param { string } initData - Инициализационные данные пользователя.
    */
   async validateUser(initData: string) {
@@ -37,6 +34,10 @@ export class AuthService {
     }
   }
 
+  /**
+   * Сервис для создания Refresh-токена пользователя.
+   * @param { string } userId - id пользователя.
+   */
   issueTokens(userId: string): AuthResponseDto {
     const data = { id: userId };
 
