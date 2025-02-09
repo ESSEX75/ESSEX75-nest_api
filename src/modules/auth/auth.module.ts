@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersModule } from 'src/modules/users/dto/users.module';
+import { UsersModule } from 'src/modules/users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { ConfigModule, ConfigService } from 'node_modules/@nestjs/config';
-import { JwtModule } from 'node_modules/@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

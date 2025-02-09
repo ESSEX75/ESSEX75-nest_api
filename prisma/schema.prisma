@@ -19,8 +19,32 @@ enum EnumKycUserRoleDto {
   ADMIN
 }
 
+// Таблица пользователей
 model User {
+  // Уникальный идентификатор пользователя (UUID)
   id          String              @id @default(uuid())
+  // Уникальный Telegram ID пользователя
   telegramId  Int                 @unique @map("telegram_id")
-  role        EnumKycUserRoleDto  // Используем перечисление для роли пользователя
+  // Роль пользователя в системе (гость, владелец ресторана, администратор)
+  role        EnumKycUserRoleDto  
+  // Список ресторанов, принадлежащих пользователю
+  restaurants Restaurant[]       @relation("OwnerRestaurants") 
+}
+
+// Таблица ресторанов
+model Restaurant {
+  // Уникальный идентификатор ресторана (UUID)
+  id          String   @id @default(uuid())
+  // Название ресторана
+  name        String
+  // Владелец ресторана (пользователь)
+  owner       User     @relation("OwnerRestaurants", fields: [ownerId], references: [id])
+  // ID владельца ресторана (связь с таблицей User)
+  ownerId     String
+  // Флаг, одобрен ли ресторан модератором
+  isApproved  Boolean @default(false) 
+  // Дата создания ресторана (устанавливается автоматически)
+  createdAt   DateTime @default(now())
+  // Дата последнего обновления ресторана (автоматически обновляется при изменении записи)
+  updatedAt   DateTime @updatedAt
 }

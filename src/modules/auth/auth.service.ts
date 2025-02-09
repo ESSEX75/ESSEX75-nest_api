@@ -1,11 +1,7 @@
-import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { UserDto } from 'src/modules/users/dto/user.dto';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { parse, validate } from '@telegram-apps/init-data-node';
 import { JwtService } from '@nestjs/jwt';
-import { verify } from 'crypto';
-import { Response } from 'express';
-import { AuthResponseDto } from './dto/auth-response.dto';
+import { AuthResponseDto } from './auth.types';
 
 @Injectable()
 export class AuthService {
@@ -43,7 +39,7 @@ export class AuthService {
 
     // Время жизни токенов
     const accessTokenExpiresIn = 3600; // 1 час в секундах
-    const refreshTokenExpiresIn = '7d'; // 7 дней
+    const refreshTokenExpiresIn = process.env.EXPIRES_IN;
 
     const accessToken = this.jwt.sign(data, {
       expiresIn: `${accessTokenExpiresIn}s`

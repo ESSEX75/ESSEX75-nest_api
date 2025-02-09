@@ -1,9 +1,10 @@
 import { Body, Controller, HttpCode, Post, Req, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../users/users.service';
 import { v4 as uuidv4 } from 'uuid';
 import { EnumKycUserRoleDto } from '@prisma/client';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -19,7 +20,8 @@ export class AuthController {
    */
   @HttpCode(200)
   @Post('auth_refresh')
-  async authTelegram(@Body('initData') initData: string) {
+  @ApiBody({ type: RefreshTokenDto })
+  async authRefresh(@Body('initData') initData: string) {
     const { user: telegramUser } = await this.authService.validateUser(initData);
     const telegramId = telegramUser.id;
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { UserDto } from './dto/user.dto';
-import { User as TelegramUser } from '@telegram-apps/init-data-node';
 import { EKycStatus } from './user.enum';
-import { IKycStatus } from './user.models';
+import { IKycStatus, IPermissions } from './user.types';
+import { CreateUserDto } from './dto/user.dto';
+import { EnumKycUserRoleDto } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -30,10 +30,54 @@ export class UsersService {
    * Получения статуса пользователя.
    * @param {string} id - id пользователя.
    */
-  async getPermissions(id: string): Promise<IKycStatus> {
+  async getPermissions(id: string): Promise<IPermissions> {
     const { role } = await this.getByRole(id);
+    const CAN_VIEW_RESTAURANTS = true;
+    let canModifyAnyRestaurant = false;
+    let canAddRestaurant: boolean;
+    let canEditOwnRestaurant: boolean;
+    let canDeleteOwnRestaurant: boolean;
+    let canApproveRestaurants: boolean;
 
-    return;
+    switch (role) {
+      case EnumKycUserRoleDto.ADMIN:
+        (canAddRestaurant = true),
+          (canEditOwnRestaurant = true),
+          (canDeleteOwnRestaurant = true),
+          (canModifyAnyRestaurant = true),
+          (canApproveRestaurants = true);
+        break;
+      case EnumKycUserRoleDto.MASTER:
+        (canAddRestaurant = true),
+          (canEditOwnRestaurant = true),
+          (canDeleteOwnRestaurant = true),
+          (canModifyAnyRestaurant = false),
+          (canApproveRestaurants = false);
+        break;
+      case EnumKycUserRoleDto.GUEST:
+        (canAddRestaurant = false),
+          (canEditOwnRestaurant = false),
+          (canDeleteOwnRestaurant = false),
+          (canModifyAnyRestaurant = false),
+          (canApproveRestaurants = false);
+        break;
+      default:
+        (canAddRestaurant = false),
+          (canEditOwnRestaurant = false),
+          (canDeleteOwnRestaurant = false),
+          (canModifyAnyRestaurant = false),
+          (canApproveRestaurants = false);
+        break;
+    }
+
+    return {
+      canViewRestaurants: CAN_VIEW_RESTAURANTS,
+      canAddRestaurant,
+      canEditOwnRestaurant,
+      canDeleteOwnRestaurant,
+      canModifyAnyRestaurant,
+      canApproveRestaurants
+    };
   }
 
   /**
@@ -76,10 +120,10 @@ export class UsersService {
   }
 
   /**
-   * Поиск пользователя в базе данных по id telegram.
-   * @param { UserDto } user - Данные пользователя.
+   * Создание пользователя.
+   * @param { User } user - Данные пользователя.
    */
-  async createUser(user: UserDto) {
+  async createUser(user: CreateUserDto) {
     return this.repository.user.create({
       data: user
     });

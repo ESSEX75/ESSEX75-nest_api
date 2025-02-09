@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
@@ -16,11 +16,8 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
 
-  const config = new DocumentBuilder()
-    .setTitle('Api для byRestaurants')
-    .setVersion('1.0')
+  const config = new DocumentBuilder().setTitle('Api для byRestaurants').setVersion('1.0').addBearerAuth().build();
 
-    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document, {
     swaggerOptions: {

@@ -1,6 +1,3 @@
-import { EnumKycUserRoleDto } from '@prisma/client';
+import { User } from '@prisma/client';
 
-export interface UserDto {
-  telegramId: number;
-  role: EnumKycUserRoleDto;
-}
+export type CreateUserDto = Omit<User, 'id'>;
